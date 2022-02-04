@@ -36,10 +36,12 @@ def time_for_rest_evaluation(var):
 
 
 def motivation_evaluation(var, a_name, b_name):
-    a, b = 5 if var[0] in [1, 2, 3, 8, 9, 10] else 0, \
-        5 if var[1] in [1, 2, 3, 8, 9, 10] else 0
+    a, b = 5 if var[0] in [0, 1, 2, 3, 8, 9, 10] else 0, \
+        5 if var[1] in [0, 1, 2, 3, 8, 9, 10] else 0
 
     print(f"""
+Motivation:
+
 {a_name} gets {a} points!
 {b_name} gets {b} points!
 """)
@@ -56,7 +58,15 @@ def mood_evaluation(var):
 
 def score_formula(var, cf, a_name, b_name):
     a, b = list(map(lambda x: int(x), var.split()))
-    a, b = round(100/(a+b)*a*cf), round(100/(a+b)*b*cf)
+    try:
+        a, b = round(100/(a+b)*a*cf), round(100/(a+b)*b*cf)
+    except ZeroDivisionError:
+        if a == 0 and b == 0:
+            a, b = round(100*cf/2), round(100*cf/2)
+        elif b == 0:
+            a, b = 100*cf, 0
+        else:
+            a, b = 0, 100*cf
 
     print(f"""
 {a_name} gets {a} points!
