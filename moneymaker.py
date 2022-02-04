@@ -38,6 +38,8 @@ def time_for_rest_evaluation(var):
 def motivation_evaluation(var, a_name, b_name):
     a, b = 5 if var[0] in [0, 1, 2, 3, 8, 9, 10] else 0, \
         5 if var[1] in [0, 1, 2, 3, 8, 9, 10] else 0
+    if a+b == 0:
+        a, b = 5, 5
 
     print(f"""
 Motivation:
@@ -76,4 +78,5 @@ def score_formula(var, cf, a_name, b_name):
     return a, b
 
 
-print(main())
+if __name__ == "__main__":
+    print(main())
