@@ -10,12 +10,14 @@ def main():
     motivation = motivation_evaluation(standings, a_name, b_name)
     mood = score_formula(mood_evaluation(input("Mood: ")), 0.05, a_name, b_name)
 
-    a = form[0] + head_to_head[0] + absent_players[1] + home_away[0] +\
-        standings[0] + time_for_rest[0] + motivation[0] + mood[0]
+    a, b = form[0] + head_to_head[0] + absent_players[1] + home_away[0] +\
+        standings[0] + time_for_rest[0] + motivation[0] + mood[0],\
+        form[1] + head_to_head[1] + absent_players[0] + home_away[1] +\
+        standings[1] + time_for_rest[1] + motivation[1] + mood[1]
 
     return f"""
 Winning chance of {a_name} is {a}%
-Winnings chance of {b_name} is {100-a}%
+Winnings chance of {b_name} is {b}%
 """
 
 
