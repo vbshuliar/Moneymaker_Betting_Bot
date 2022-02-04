@@ -66,5 +66,4 @@ def score_formula(var, cf, a_name, b_name):
     return a, b
 
 
-if __name__ == "__main__":
-    print(main())
+print(main())
