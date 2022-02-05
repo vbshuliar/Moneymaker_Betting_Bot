@@ -1,10 +1,11 @@
 def main():
-    a_name = input("First team name: ")
-    b_name = input("Second team name: ")
-    form = score_formula(input("Form: "), 0.25, a_name, b_name)
+    a_name = input("\nFirst team name: ")
+    b_name = input("\nSecond team name: ")
+    form = score_formula(input("\nForm: "), 0.25, a_name, b_name)
     head_to_head = score_formula(input("Head-to-head: "), 0.2, a_name, b_name)
     absent_players = score_formula(input("Absent players: "), 0.15, a_name, b_name)
-    home_away = score_formula(input("Home-away: "), 0.15, a_name, b_name)
+    print("(Score displayed reversed)")
+    home_away = score_formula(input("\nHome-away: "), 0.15, a_name, b_name)
     table = input("Standings: ")
     standings = score_formula(standings_evaluation(table), 0.1, a_name, b_name)
     time_for_rest = score_formula(time_for_rest_evaluation(input("Time for rest: ")), 0.05, a_name, b_name)
@@ -46,8 +47,7 @@ def motivation_evaluation(var, a_name, b_name):
     if a == b:
         a, b = 2.5, 2.5
 
-    print(f"""
-Motivation:
+    print(f"""Motivation:
 
 {a_name} gets {a} points!
 {b_name} gets {b} points!
@@ -66,18 +66,18 @@ def mood_evaluation(var):
 def score_formula(var, cf, a_name, b_name):
     a, b = list(map(lambda x: int(x), var.split()))
     try:
-        a, b = round(100/(a+b)*a*cf), round(100/(a+b)*b*cf)
+        a, b = round(100/(a+b)*a*cf, 1), round(100/(a+b)*b*cf, 1)
     except ZeroDivisionError:
         if a == 0 and b == 0:
-            a, b = round(100*cf/2), round(100*cf/2)
+            a, b = round(100*cf/2, 1), round(100*cf/2, 1)
         elif b == 0:
             a, b = 100*cf, 0
         else:
             a, b = 0, 100*cf
 
     print(f"""
-{a_name} gets {a} points!
-{b_name} gets {b} points!
+{a_name} gets {a} points
+{b_name} gets {b} points
 """)
 
     return a, b
