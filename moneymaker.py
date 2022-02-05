@@ -5,9 +5,10 @@ def main():
     head_to_head = score_formula(input("Head-to-head: "), 0.2, a_name, b_name)
     absent_players = score_formula(input("Absent players: "), 0.15, a_name, b_name)
     home_away = score_formula(input("Home-away: "), 0.15, a_name, b_name)
-    standings = score_formula(standings_evaluation(input("Standings: ")), 0.1, a_name, b_name)
+    table = input("Standings: ")
+    standings = score_formula(standings_evaluation(table), 0.1, a_name, b_name)
     time_for_rest = score_formula(time_for_rest_evaluation(input("Time for rest: ")), 0.05, a_name, b_name)
-    motivation = motivation_evaluation(standings, a_name, b_name)
+    motivation = motivation_evaluation(table, a_name, b_name)
     mood = score_formula(mood_evaluation(input("Mood: ")), 0.05, a_name, b_name)
 
     a, b = form[0] + head_to_head[0] + absent_players[1] + home_away[0] +\
@@ -38,10 +39,12 @@ def time_for_rest_evaluation(var):
 
 
 def motivation_evaluation(var, a_name, b_name):
-    a, b = 5 if var[0] in [0, 1, 2, 3, 8, 9, 10] else 0, \
-        5 if var[1] in [0, 1, 2, 3, 8, 9, 10] else 0
-    if a+b == 0:
-        a, b = 5, 5
+    c, a, b = list(map(int, var.split()))
+    a, b = round(10/c*a), round(10/c*b)
+    a, b = 5 if a in range(0, 4) or a in range(8, 10) else 0, \
+        5 if b in range(0, 4) or b in range(8, 10) else 0
+    if a == b:
+        a, b = 2.5, 2.5
 
     print(f"""
 Motivation:
