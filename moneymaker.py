@@ -26,7 +26,7 @@ Winnings chance of {b_name} is {b}%
 def standings_evaluation(var):
     c, a, b = list(map(int, var.split()))
 
-    return f"{round(100/c*a)} {round(100/c*b)}"
+    return f"{round(100/c*b)} {round(100/c*a)}"
 
 
 def time_for_rest_evaluation(var):
@@ -42,8 +42,8 @@ def time_for_rest_evaluation(var):
 def motivation_evaluation(var, a_name, b_name):
     c, a, b = list(map(int, var.split()))
     a, b = round(10/c*a), round(10/c*b)
-    a, b = 5 if a in range(0, 4) or a in range(8, 10) else 0, \
-        5 if b in range(0, 4) or b in range(8, 10) else 0
+    a, b = 5 if a in range(0, 4) or a in range(8, 11) else 0, \
+        5 if b in range(0, 4) or b in range(8, 11) else 0
     if a == b:
         a, b = 2.5, 2.5
 
