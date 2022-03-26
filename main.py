@@ -274,7 +274,7 @@ def main() -> str:
         data_a, data_b = duo_receive_input()
 
     result = run(data_a, data_b)
-    return f"{result}"
+    return print(result)
 
 
 def run(data_a: dict, data_b: dict) -> str:
