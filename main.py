@@ -32,6 +32,14 @@ class Team:
         """Name of the team."""
         self.name = name
 
+    def set_coeff(self, coeff: float) -> None:
+        """Coefficient from the bookmaker."""
+        self.coeff = coeff
+
+    def set_chance(self):
+        """Chance of not losing the match."""
+        self.chance = round(100 / self.coeff, 1)
+
     def set_form(self, form: int) -> None:
         """The number of victories in the last five matches of the league."""
         self.form = Team.__input_check(form, self.maximums["form"])
@@ -88,7 +96,9 @@ class Team:
 
     def __compare_place(self, a_place: int, b_place: int) -> tuple:
         """Compares places in the standings."""
-        return Team.__evaluate_with_minimum(a_place, b_place, self.minimums["place"])
+        return Team.__evaluate_with_minimum(
+            a_place - 1, b_place - 1, self.minimums["place"] - 1
+        )
 
     def set_rest(self, rest: int) -> None:
         """The number of days passed from the last match."""
@@ -98,15 +108,9 @@ class Team:
         """Compares time for rest."""
         return Team.__evaluate_with_maximum(a_rest, b_rest, self.maximums["rest"])
 
-    def set_motivation(self) -> None:
-        """The team is motivated to win if it is in first or last 35% of the table."""
-        if self.place in (
-            list(range(1, int(self.standings * 0.35) + 1))
-            + list(range(int(self.standings * 0.65), self.standings + 1))
-        ):
-            self.motivation = 1
-        else:
-            self.motivation = 0
+    def set_motivation(self, motivation) -> None:
+        """Whether team is motivated."""
+        self.motivation = Team.__input_check(motivation, self.maximums["motivation"])
 
     def __compare_motivation(self, a_motivation: int, b_motivation: int) -> tuple:
         """Compares motivation."""
@@ -181,7 +185,8 @@ class Team:
         )
         for _ in comparison:
             self.score += _[0]
-        opponent.score = 100 - self.score
+        self.score = round(self.score, 1)
+        opponent.score = round(100 - self.score, 1)
         print(f"Form: ({self.form}, {opponent.form})")
         print(self.__compare_form(self.form, opponent.form))
         print(f"Head-to-head: ({self.head_to_head}, {opponent.head_to_head})")
@@ -200,10 +205,18 @@ class Team:
         print(self.__compare_motivation(self.motivation, opponent.motivation))
         print(f"Mood: ({self.mood}, {opponent.mood})")
         print(self.__compare_mood(self.mood, opponent.mood))
-        print("\nRESULT WITH COEFFS")
-        return f"<{self.name} {self.score}%> VS <{opponent.score}% {opponent.name}>"
+        return f"""
+My prediction:
+{self.name} has {self.score}% of power.
+{opponent.name} has {opponent.score}% of power.
 
-    def __evaluate_with_maximum(a, b, max_num):
+Bookmaker's prediction:
+{self.name} has {self.chance}% chance to win.
+Draw chance is {round(100 - self.chance - opponent.chance, 1)}%.
+{opponent.name} has {opponent.chance}% chance to win.
+"""
+
+    def __evaluate_with_maximum(a: int, b: int, max_num: int) -> tuple:
         """Evaluates the percentage."""
         if a == b:
             return 50, 50
@@ -217,7 +230,7 @@ class Team:
             a = round(100 - b, 1)
         return a, b
 
-    def __evaluate_with_minimum(a, b, min_num):
+    def __evaluate_with_minimum(a: int, b: int, min_num: int) -> tuple:
         """Evaluates the percentage."""
         if a == b:
             return 50, 50
@@ -234,47 +247,120 @@ class Team:
         """Updates percentage with coefficient."""
         return round(pair[0] * coeff, 1), round(pair[1] * coeff, 1)
 
-    def __input_check(var, scale):
+    def __input_check(var: int, scale: int) -> int:
         """Checks whether number is less than one."""
         if var >= scale:
             return scale
         return var
 
 
-def main():
+def main(method=0) -> str:
     """The main fucntion."""
-    data = receive_input()
-    team_a = Team(data["name"])
-    team_a.set_form(data["form"])
-    team_a.set_head_to_head(data["head_to_head"])
-    team_a.set_absent_players(data["absent_players"])
-    team_a.set_standings(data["standings"])
-    team_a.set_place(data["place"])
-    team_a.set_home_away(data["home_away"])
-    team_a.set_rest(data["home_away"])
-    team_a.set_motivation()
-    team_a.set_mood(data["mood"])
+    if method == 0:
+        data_a, data_b = duo_receive_input()
+    elif method == 1:
+        data_a = solo_receive_input()
+        data_b = solo_receive_input()
 
-    data = receive_input()
-    team_b = Team(data["name"])
-    team_b.set_form(data["form"])
-    team_b.set_head_to_head(data["head_to_head"])
-    team_b.set_absent_players(data["absent_players"])
-    team_b.set_standings(data["standings"])
-    team_b.set_place(data["place"])
-    team_b.set_home_away(data["home_away"])
-    team_b.set_rest(data["home_away"])
-    team_b.set_motivation()
-    team_b.set_mood(data["mood"])
+    team_a = Team(data_a["name"])
+    team_a.set_coeff(data_a["coeff"])
+    team_a.set_chance()
+    team_a.set_form(data_a["form"])
+    team_a.set_head_to_head(data_a["head_to_head"])
+    team_a.set_absent_players(data_a["absent_players"])
+    team_a.set_standings(data_a["standings"])
+    team_a.set_place(data_a["place"])
+    team_a.set_home_away(data_a["home_away"])
+    team_a.set_rest(data_a["home_away"])
+    team_a.set_motivation(data_a["motivation"])
+    team_a.set_mood(data_a["mood"])
+
+    team_b = Team(data_b["name"])
+    team_b.set_coeff(data_b["coeff"])
+    team_b.set_chance()
+    team_b.set_form(data_b["form"])
+    team_b.set_head_to_head(data_b["head_to_head"])
+    team_b.set_absent_players(data_b["absent_players"])
+    team_b.set_standings(data_b["standings"])
+    team_b.set_place(data_b["place"])
+    team_b.set_home_away(data_b["home_away"])
+    team_b.set_rest(data_b["home_away"])
+    team_b.set_motivation(data_b["motivation"])
+    team_b.set_mood(data_b["mood"])
 
     print(team_a.predict(team_b))
 
 
-def receive_input():
-    """Receives user's input."""
+def duo_receive_input() -> tuple:
+    """Receives user's input about two teams."""
+    data_a, data_b = {}, {}
+
+    print("The first team name:")
+    data_a["name"] = input(">>> ")
+    print("The second team name:")
+    data_b["name"] = input(">>> ")
+
+    print("The first team coefficient:")
+    data_a["coeff"] = check_float()
+    print("The second team coefficient:")
+    data_b["coeff"] = check_float()
+
+    print("The first team form:")
+    data_a["form"] = check_int()
+    print("The second team form:")
+    data_b["form"] = check_int()
+
+    print("The first team head-to-head wins:")
+    data_a["head_to_head"] = check_int()
+    print("The second team head-to-head wins:")
+    data_b["head_to_head"] = check_int()
+
+    print("The number of absent players in the first team:")
+    data_a["absent_players"] = check_int()
+    print("The number of absent players in the second team:")
+    data_b["absent_players"] = check_int()
+
+    print("The standings size:")
+    data_a["standings"] = check_int()
+    data_b["standings"] = data_a["standings"]
+
+    print("The first team place in the standings:")
+    data_a["place"] = check_int()
+    print("The second team place in the standings:")
+    data_b["place"] = check_int()
+
+    print("The first team home/away wins:")
+    data_a["home_away"] = check_int()
+    print("The second team home/away wins:")
+    data_b["home_away"] = check_int()
+
+    print("The first team time for rest:")
+    data_a["rest"] = check_int()
+    print("The second team time for rest:")
+    data_b["rest"] = check_int()
+
+    print("The first team motivation to win:")
+    data_a["motivation"] = check_int()
+    print("The second team motivation to win:")
+    data_b["motivation"] = check_int()
+
+    print("The first team mood:")
+    data_a["mood"] = check_int()
+    print("The second team mood:")
+    data_b["mood"] = check_int()
+
+    print("\nSuccess!\n")
+
+    return data_a, data_b
+
+
+def solo_receive_input() -> dict:
+    """Receives user's input about one team."""
     data = {}
     print("Team name:")
     data["name"] = input(">>> ")
+    print("Coefficient:")
+    data["coeff"] = check_float()
     print("Form:")
     data["form"] = check_int()
     print("Head-to-head:")
@@ -289,6 +375,8 @@ def receive_input():
     data["home_away"] = check_int()
     print("Rest:")
     data["rest"] = check_int()
+    print("Motivation:")
+    data["motivation"] = check_int()
     print("Mood:")
     data["mood"] = check_int()
 
@@ -296,7 +384,16 @@ def receive_input():
     return data
 
 
-def check_int():
+def check_float() -> float or str:
+    """Check whether input is a float number."""
+    try:
+        return float(input(">>> "))
+    except ValueError:
+        print("Error. Try again.")
+        return check_float()
+
+
+def check_int() -> int or str:
     """Checks whether input is an integer number."""
     try:
         return int(input(">>> "))
