@@ -183,10 +183,12 @@ class Team:
                 self.coeffs["mood"],
             )
         )
+
         for _ in comparison:
             self.score += _[0]
         self.score = round(self.score, 1)
         opponent.score = round(100 - self.score, 1)
+
         print(f"Form: ({self.form}, {opponent.form})")
         print(self.__compare_form(self.form, opponent.form))
         print(f"Head-to-head: ({self.head_to_head}, {opponent.head_to_head})")
@@ -205,6 +207,7 @@ class Team:
         print(self.__compare_motivation(self.motivation, opponent.motivation))
         print(f"Mood: ({self.mood}, {opponent.mood})")
         print(self.__compare_mood(self.mood, opponent.mood))
+
         return f"""
 My prediction:
 {self.name} has {self.score}% of power.
@@ -220,6 +223,7 @@ Draw chance is {round(100 - self.chance - opponent.chance, 1)}%.
         """Evaluates the percentage."""
         if a == b:
             return 50, 50
+
         k = (50 * (max([a, b]) - min([a, b])) ** 2) / ((a + b) * max_num)
 
         if a < b:
@@ -228,19 +232,23 @@ Draw chance is {round(100 - self.chance - opponent.chance, 1)}%.
         else:
             b = round(50 - k, 1)
             a = round(100 - b, 1)
+
         return a, b
 
     def __evaluate_with_minimum(a: int, b: int, min_num: int) -> tuple:
         """Evaluates the percentage."""
         if a == b:
             return 50, 50
+
         k = (50 * (max([a, b]) - min([a, b])) ** 2) / ((a + b) * min_num)
+
         if a < b:
             a = round(50 + k, 1)
             b = round(100 - a, 1)
         else:
             b = round(50 + k, 1)
             a = round(100 - b, 1)
+
         return a, b
 
     def __update_with_coeff(pair: tuple, coeff: float) -> tuple:
@@ -254,13 +262,13 @@ Draw chance is {round(100 - self.chance - opponent.chance, 1)}%.
         return var
 
 
-def main(method=0) -> str:
+def main(method=None) -> str:
     """The main fucntion."""
-    if method == 0:
-        data_a, data_b = duo_receive_input()
-    elif method == 1:
+    if method == "0":
         data_a = solo_receive_input()
         data_b = solo_receive_input()
+    else:
+        data_a, data_b = duo_receive_input()
 
     team_a = Team(data_a["name"])
     team_a.set_coeff(data_a["coeff"])
@@ -357,26 +365,37 @@ def duo_receive_input() -> tuple:
 def solo_receive_input() -> dict:
     """Receives user's input about one team."""
     data = {}
+
     print("Team name:")
     data["name"] = input(">>> ")
+
     print("Coefficient:")
     data["coeff"] = check_float()
+
     print("Form:")
     data["form"] = check_int()
+
     print("Head-to-head:")
     data["head_to_head"] = check_int()
+
     print("Number of absent players:")
     data["absent_players"] = check_int()
+
     print("Standings size:")
     data["standings"] = check_int()
+
     print("Place in the standings:")
     data["place"] = check_int()
+
     print("Home/away:")
     data["home_away"] = check_int()
+
     print("Rest:")
     data["rest"] = check_int()
+
     print("Motivation:")
     data["motivation"] = check_int()
+
     print("Mood:")
     data["mood"] = check_int()
 
@@ -403,4 +422,6 @@ def check_int() -> int or str:
 
 
 if __name__ == "__main__":
-    main()
+    print("Type '0' to change input mode from duo to solo or press 'Enter' to skip.")
+    method = input(">>> ")
+    main(method)
