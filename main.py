@@ -306,28 +306,4 @@ def check_int():
 
 
 if __name__ == "__main__":
-    # main()
-
-    team_a = Team("Barcelona")
-    team_a.set_form(6)
-    team_a.set_head_to_head(1)
-    team_a.set_absent_players(4)
-    team_a.set_standings(20)
-    team_a.set_place(3)
-    team_a.set_home_away(5)
-    team_a.set_rest(6)
-    team_a.set_motivation()
-    team_a.set_mood(0)
-
-    team_b = Team("Lazio")
-    team_b.set_form(7)
-    team_b.set_head_to_head(2)
-    team_b.set_absent_players(3)
-    team_b.set_standings(20)
-    team_b.set_place(20)
-    team_b.set_home_away(10)
-    team_b.set_rest(9)
-    team_b.set_motivation()
-    team_b.set_mood(1)
-
-    print(team_a.predict(team_b))
+    main()
