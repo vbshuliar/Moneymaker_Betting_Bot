@@ -262,14 +262,23 @@ Draw chance is {round(100 - self.chance - opponent.chance, 1)}%.
         return var
 
 
-def main(method=None) -> str:
+def main() -> str:
     """The main fucntion."""
+    print("Type '0' to change input mode from duo to solo or press 'Enter' to skip.")
+    method = input(">>> ")
+
     if method == "0":
         data_a = solo_receive_input()
         data_b = solo_receive_input()
     else:
         data_a, data_b = duo_receive_input()
 
+    result = run(data_a, data_b)
+    return f"{result}"
+
+
+def run(data_a: dict, data_b: dict) -> str:
+    """Starts the algorithm."""
     team_a = Team(data_a["name"])
     team_a.set_coeff(data_a["coeff"])
     team_a.set_chance()
@@ -296,7 +305,7 @@ def main(method=None) -> str:
     team_b.set_motivation(data_b["motivation"])
     team_b.set_mood(data_b["mood"])
 
-    print(team_a.predict(team_b))
+    return team_a.predict(team_b)
 
 
 def duo_receive_input() -> tuple:
@@ -422,6 +431,4 @@ def check_int() -> int or str:
 
 
 if __name__ == "__main__":
-    print("Type '0' to change input mode from duo to solo or press 'Enter' to skip.")
-    method = input(">>> ")
-    main(method)
+    main()
