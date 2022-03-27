@@ -285,7 +285,8 @@ def main() -> str:
         data_a, data_b = duo_receive_input()
 
     result = run(data_a, data_b)
-    return print(result)
+    print(result)
+    return main()
 
 
 def run(data_a: dict, data_b: dict) -> str:
