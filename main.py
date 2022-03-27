@@ -28,9 +28,20 @@ class Team:
     }
     score = 0
 
-    def __init__(self, name: str) -> None:
-        """Name of the team."""
-        self.name = name
+    def __init__(self, data: dict) -> None:
+        """Information about the team."""
+        self.name = data["name"]
+        self.set_coeff(data["coeff"])
+        self.set_chance()
+        self.set_form(data["form"])
+        self.set_head_to_head(data["head_to_head"])
+        self.set_absent_players(data["absent_players"])
+        self.set_standings(data["standings"])
+        self.set_place(data["place"])
+        self.set_home_away(data["home_away"])
+        self.set_rest(data["home_away"])
+        self.set_motivation(data["motivation"])
+        self.set_mood(data["mood"])
 
     def set_coeff(self, coeff: float) -> None:
         """Coefficient from the bookmaker."""
@@ -279,31 +290,8 @@ def main() -> str:
 
 def run(data_a: dict, data_b: dict) -> str:
     """Starts the algorithm."""
-    team_a = Team(data_a["name"])
-    team_a.set_coeff(data_a["coeff"])
-    team_a.set_chance()
-    team_a.set_form(data_a["form"])
-    team_a.set_head_to_head(data_a["head_to_head"])
-    team_a.set_absent_players(data_a["absent_players"])
-    team_a.set_standings(data_a["standings"])
-    team_a.set_place(data_a["place"])
-    team_a.set_home_away(data_a["home_away"])
-    team_a.set_rest(data_a["home_away"])
-    team_a.set_motivation(data_a["motivation"])
-    team_a.set_mood(data_a["mood"])
-
-    team_b = Team(data_b["name"])
-    team_b.set_coeff(data_b["coeff"])
-    team_b.set_chance()
-    team_b.set_form(data_b["form"])
-    team_b.set_head_to_head(data_b["head_to_head"])
-    team_b.set_absent_players(data_b["absent_players"])
-    team_b.set_standings(data_b["standings"])
-    team_b.set_place(data_b["place"])
-    team_b.set_home_away(data_b["home_away"])
-    team_b.set_rest(data_b["home_away"])
-    team_b.set_motivation(data_b["motivation"])
-    team_b.set_mood(data_b["mood"])
+    team_a = Team(data_a)
+    team_b = Team(data_b)
 
     return team_a.predict(team_b)
 
@@ -409,6 +397,7 @@ def solo_receive_input() -> dict:
     data["mood"] = check_int()
 
     print("\nSuccess!\n")
+
     return data
 
 
